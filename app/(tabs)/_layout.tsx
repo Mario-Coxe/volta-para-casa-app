@@ -8,7 +8,7 @@ export default function Layout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
@@ -27,6 +27,7 @@ export default function Layout() {
       <Tabs.Screen
         name="index"
         options={{
+          headerTitle: "Página Inicial",
           tabBarIcon: ({ focused }) => (
             <View
               style={{
@@ -50,12 +51,14 @@ export default function Layout() {
               </Text>
             </View>
           ),
+
         }}
       />
 
       <Tabs.Screen
         name="search"
         options={{
+          headerTitle: "Pesquisar",
           tabBarIcon: ({ focused }) => (
             <View
               style={{
@@ -75,7 +78,7 @@ export default function Layout() {
                   marginTop: 4,
                 }}
               >
-                Search
+                Pesquisar
               </Text>
             </View>
           ),
@@ -85,6 +88,7 @@ export default function Layout() {
       <Tabs.Screen
         name="add"
         options={{
+          headerTitle: "Registar",
           tabBarIcon: ({ focused }) => (
             <View
               style={{
@@ -106,6 +110,7 @@ export default function Layout() {
       <Tabs.Screen
         name="likes"
         options={{
+          headerTitle: "Seguidos",
           tabBarIcon: ({ focused }) => (
             <View
               style={{
@@ -114,10 +119,11 @@ export default function Layout() {
               }}
             >
               <Ionicons
-                name={focused ? "heart" : "heart-outline"}
+                name={focused ? "bookmark" : "bookmark-outline"}
                 color={focused ? "#F02A4B" : "gray"}
                 size={24}
               />
+
               <Text
                 style={{
                   color: focused ? "#F02A4B" : "gray",
@@ -125,7 +131,7 @@ export default function Layout() {
                   marginTop: 4,
                 }}
               >
-                Likes
+                Seguidos
               </Text>
             </View>
           ),
@@ -135,6 +141,7 @@ export default function Layout() {
       <Tabs.Screen
         name="profile"
         options={{
+          headerTitle: "Perfil",
           tabBarIcon: ({ focused }) => (
             <View
               style={{
@@ -154,7 +161,7 @@ export default function Layout() {
                   marginTop: 4,
                 }}
               >
-                Profile
+                Perfil
               </Text>
             </View>
           ),
