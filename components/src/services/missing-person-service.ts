@@ -27,7 +27,8 @@ export async function findAllMissingPersons(): Promise<MissingPerson[]> {
             person.second_photo,
             person.third_photo,
             person.third_photo,
-            person.status_id
+            person.status_id,
+            person.status
           )
       );
 

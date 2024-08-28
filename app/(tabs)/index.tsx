@@ -18,6 +18,8 @@ const { width: screenWidth } = Dimensions.get('window');
 export default function HomeScreen() {
   const { missingPersons, loading, error } = useHomeViewModel();
 
+  console.log(missingPersons)
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -53,8 +55,19 @@ export default function HomeScreen() {
                 resizeMode="contain"
               />
             </View>
+
           ))}
         </Swiper>
+
+        <View style={styles.details}>
+          <Text style={styles.name}>
+            {item.name}, {item.age} anos
+          </Text>
+          <Text style={styles.gender}>Gênero: {item.gender}</Text>
+          <Text style={styles.location}>
+            Última localização: {item.last_location}
+          </Text>
+        </View>
       </View>
     );
   };
