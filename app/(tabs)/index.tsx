@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,13 +12,28 @@ import Swiper from 'react-native-swiper';
 import useHomeViewModel from '@/components/src/view-models/HomeViewModel';
 import MissingPerson from '@/components/src/models/missing-person';
 import { API_URL_ACESS_FILE } from '@/enviroments';
+import Icon from "@expo/vector-icons/Ionicons";
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const { missingPersons, loading, error } = useHomeViewModel();
 
-  console.log(missingPersons)
+  const [loaded] = useFonts({
+    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
 
   if (loading) {
     return (
@@ -52,21 +67,33 @@ export default function HomeScreen() {
               <Image
                 source={{ uri: `${API_URL_ACESS_FILE}${imageUrl}` }}
                 style={styles.carouselImage}
-                resizeMode="contain"
+                resizeMode="cover"
               />
             </View>
-
           ))}
         </Swiper>
 
         <View style={styles.details}>
-          <Text style={styles.name}>
-            {item.name}, {item.age} anos
-          </Text>
-          <Text style={styles.gender}>Gênero: {item.gender}</Text>
-          <Text style={styles.location}>
-            Última localização: {item.last_location}
-          </Text>
+          <View style={styles.detailItem}>
+            <Icon name="person" size={20} color="#555" style={styles.icon} />
+            <Text style={styles.name}>
+              {item.name}, {item.age} anos
+            </Text>
+          </View>
+
+          <View style={styles.detailItem}>
+            <Icon name="location-sharp" size={20} color="#555" style={styles.icon} />
+            <Text style={styles.location}>
+              Última localização: {item.last_location}
+            </Text>
+          </View>
+
+          <View style={styles.detailItem}>
+            <Icon name="information-circle" size={20} color="#555" style={styles.icon} />
+            <Text style={styles.status}>
+              Status: {item.status.name}
+            </Text>
+          </View>
         </View>
       </View>
     );
@@ -109,11 +136,11 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#FFF',
-    borderRadius: 12,
+    borderRadius: 16,
     marginBottom: 20,
     overflow: 'hidden',
-    elevation: 10,
-    width: screenWidth * 0.9,
+    elevation: 8,
+    width: screenWidth * 0.95,
     alignSelf: 'center',
   },
   swiper: {
@@ -125,39 +152,66 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   carouselImage: {
-    width: screenWidth * 0.9,
+    width: screenWidth * 0.95,
     height: 250,
-    borderRadius: 12,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    resizeMode: 'contain', // Garante que a imagem seja contida no container
   },
   details: {
-    padding: 16,
+    padding: 20,
+    backgroundColor: '#F7F7F7',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+  },
+  detailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 4,
+  },
+  icon: {
+    marginRight: 8,
+    color: '#555',
   },
   name: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#2C3E50',
+    marginBottom: 8,
+    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
   },
   gender: {
     fontSize: 16,
-    color: '#555',
-    marginTop: 4,
+    color: '#7F8C8D',
+    marginBottom: 4,
+    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
   },
   location: {
     fontSize: 16,
-    color: '#555',
-    marginTop: 4,
+    color: '#7F8C8D',
+    marginBottom: 4,
+    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
   },
-  description: {
-    fontSize: 14,
-    color: '#777',
-    marginTop: 8,
-    lineHeight: 20,
+  status: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#E74C3C',
+    marginBottom: 4,
+    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
+  },
+  reportedBy: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#34495E',
+    marginTop: 12,
+    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
   },
   emptyText: {
     textAlign: 'center',
     fontSize: 18,
     color: '#999',
     marginTop: 50,
+    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
   },
   loadingContainer: {
     flex: 1,
@@ -176,5 +230,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#D9534F',
     textAlign: 'center',
+    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
   },
 });
