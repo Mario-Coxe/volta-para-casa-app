@@ -15,7 +15,7 @@ import { API_URL_ACESS_FILE } from '@/enviroments';
 import Icon from "@expo/vector-icons/Ionicons";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-
+import { formatDate } from '@/components/src/utils/date-formatter';
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
@@ -23,6 +23,7 @@ export default function HomeScreen() {
 
   const [loaded] = useFonts({
     SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
+    PoppinsBold: require('../../assets/fonts/Poppins-Bold.ttf')
   });
 
   useEffect(() => {
@@ -74,10 +75,17 @@ export default function HomeScreen() {
         </Swiper>
 
         <View style={styles.details}>
+
+          <View style={styles.dateContainer}>
+            <Text style={styles.dateText}>
+              {formatDate(item.created_at)}
+            </Text>
+          </View>
+
           <View style={styles.detailItem}>
             <Icon name="person" size={20} color="#555" style={styles.icon} />
             <Text style={styles.name}>
-              {item.name}, {item.age} anos
+              {item.name}
             </Text>
           </View>
 
@@ -174,11 +182,9 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   name: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 14,
     color: '#2C3E50',
-    marginBottom: 8,
-    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
+    fontFamily: 'PoppinsBold',
   },
   gender: {
     fontSize: 16,
@@ -231,5 +237,17 @@ const styles = StyleSheet.create({
     color: '#D9534F',
     textAlign: 'center',
     fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
+  },
+  age: {
+    fontSize: 16, // Ajuste o tamanho da fonte como preferir
+    color: '#7F8C8D', // Cor da fonte
+  },
+  dateContainer: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',  // Alinha o texto à direita
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#7F8C8D',
   },
 });

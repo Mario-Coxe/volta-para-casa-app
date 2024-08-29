@@ -1,4 +1,4 @@
-import { STATUS, USER} from "./interfaces/missing-person-interfaces";
+import { STATUS, USER } from "./interfaces/missing-person-interfaces";
 export default class MissingPerson {
   constructor(
     public id: number,
@@ -14,6 +14,7 @@ export default class MissingPerson {
     public fourth_photo: string,
     public status_id: string,
     public status: STATUS,
-    public user: USER
+    public user: USER,
+    public created_at: string
   ) {}
 }
