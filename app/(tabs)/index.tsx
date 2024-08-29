@@ -16,6 +16,7 @@ import Icon from "@expo/vector-icons/Ionicons";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { formatDate } from '@/components/src/utils/date-formatter';
+import { getStatusColor } from '@/components/src/utils/color-for-status';
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
@@ -23,7 +24,9 @@ export default function HomeScreen() {
 
   const [loaded] = useFonts({
     SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
-    PoppinsBold: require('../../assets/fonts/Poppins-Bold.ttf')
+    PoppinsBold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    PoppinsRegular: require('../../assets/fonts/Poppins-Regular.ttf')
+
   });
 
   useEffect(() => {
@@ -75,7 +78,6 @@ export default function HomeScreen() {
         </Swiper>
 
         <View style={styles.details}>
-
           <View style={styles.dateContainer}>
             <Text style={styles.dateText}>
               {formatDate(item.created_at)}
@@ -98,10 +100,16 @@ export default function HomeScreen() {
 
           <View style={styles.detailItem}>
             <Icon name="information-circle" size={20} color="#555" style={styles.icon} />
-            <Text style={styles.status}>
-              Status: {item.status.name}
-            </Text>
+            <View style={styles.statusContainer}>
+              <Text style={styles.statusLabel}>
+                Status:
+              </Text>
+              <Text style={[styles.statusValue, { color: getStatusColor(item.status.name) }]}>
+                {" " + item.status.name}
+              </Text>
+            </View>
           </View>
+
         </View>
       </View>
     );
@@ -164,7 +172,7 @@ const styles = StyleSheet.create({
     height: 250,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    resizeMode: 'contain', // Garante que a imagem seja contida no container
+    resizeMode: 'contain',
   },
   details: {
     padding: 20,
@@ -186,38 +194,22 @@ const styles = StyleSheet.create({
     color: '#2C3E50',
     fontFamily: 'PoppinsBold',
   },
-  gender: {
-    fontSize: 16,
-    color: '#7F8C8D',
-    marginBottom: 4,
-    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
-  },
   location: {
-    fontSize: 16,
-    color: '#7F8C8D',
-    marginBottom: 4,
-    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
+    fontSize: 12,
+    color: '#000',
+    fontFamily: 'PoppinsRegular',
   },
   status: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 12,
     color: '#E74C3C',
-    marginBottom: 4,
-    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
-  },
-  reportedBy: {
-    fontSize: 16,
-    fontStyle: 'italic',
-    color: '#34495E',
-    marginTop: 12,
-    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
+    fontFamily: 'PoppinsRegular',
   },
   emptyText: {
     textAlign: 'center',
     fontSize: 18,
     color: '#999',
     marginTop: 50,
-    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
+    fontFamily: 'SpaceMono',
   },
   loadingContainer: {
     flex: 1,
@@ -236,18 +228,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#D9534F',
     textAlign: 'center',
-    fontFamily: 'SpaceMono', // Adiciona a fonte personalizada
-  },
-  age: {
-    fontSize: 16, // Ajuste o tamanho da fonte como preferir
-    color: '#7F8C8D', // Cor da fonte
+    fontFamily: 'PoppinsRegular',
   },
   dateContainer: {
     justifyContent: 'center',
-    alignItems: 'flex-end',  // Alinha o texto à direita
+    alignItems: 'flex-end',
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 11,
     color: '#7F8C8D',
+    fontFamily: 'PoppinsRegular'
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: -2
+  },
+  statusLabel: {
+    fontSize: 12,
+    fontFamily: 'PoppinsRegular',
+    color: '#000',
+  },
+  statusValue: {
+    fontSize: 12,
+    fontFamily: 'PoppinsRegular'
   },
 });
