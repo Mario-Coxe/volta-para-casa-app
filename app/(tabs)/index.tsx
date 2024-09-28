@@ -18,6 +18,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { formatDate } from '@/components/src/utils/date-formatter';
 import { getStatusColor } from '@/components/src/utils/color-for-status';
 const { width: screenWidth } = Dimensions.get('window');
+import { Card } from 'react-native-paper';
 
 export default function HomeScreen() {
   const { missingPersons, loading, error } = useHomeViewModel();
@@ -59,59 +60,67 @@ export default function HomeScreen() {
     const imageUrls = getValidImageUrls(item);
 
     return (
-      <View style={styles.card}>
-        <Swiper
-          style={styles.swiper}
-          showsPagination
-          activeDotColor="#F02A4B"
-          loop
-        >
-          {imageUrls.map((imageUrl, index) => (
-            <View key={index} style={styles.slide}>
-              <Image
-                source={{ uri: `${API_URL_ACESS_FILE}${imageUrl}` }}
-                style={styles.carouselImage}
-                resizeMode="cover"
-              />
-            </View>
-          ))}
-        </Swiper>
 
-        <View style={styles.details}>
-          <View style={styles.dateContainer}>
-            <Text style={styles.dateText}>
-              {formatDate(item.created_at)}
-            </Text>
-          </View>
+      <Card>
+        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+      </Card>
 
-          <View style={styles.detailItem}>
-            <Icon name="person" size={20} color="#555" style={styles.icon} />
-            <Text style={styles.name}>
-              {item.name}
-            </Text>
-          </View>
+      // <View style={styles.card}>
 
-          <View style={styles.detailItem}>
-            <Icon name="location-sharp" size={20} color="#555" style={styles.icon} />
-            <Text style={styles.location}>
-              Última localização: {item.last_location}
-            </Text>
-          </View>
 
-          <View style={styles.detailItem}>
-            <Icon name="information-circle" size={20} color="#555" style={styles.icon} />
-            <View style={styles.statusContainer}>
-              <Text style={styles.statusLabel}>
-                Status:
-              </Text>
-              <Text style={[styles.statusValue, { color: getStatusColor(item.status.name) }]}>
-                {" " + item.status.name}
-              </Text>
-            </View>
-          </View>
 
-        </View>
-      </View>
+      //   {/* <Swiper
+      //     style={styles.swiper}
+      //     showsPagination
+      //     activeDotColor="#F02A4B"
+      //     loop
+      //   >
+      //     {imageUrls.map((imageUrl, index) => (
+      //       <View key={index} style={styles.slide}>
+      //         <Image
+      //           source={{ uri: `${API_URL_ACESS_FILE}${imageUrl}` }}
+      //           style={styles.carouselImage}
+      //           resizeMode="cover"
+      //         />
+      //       </View>
+      //     ))}
+      //   </Swiper> */}
+
+      //   <View style={styles.details}>
+      //     <View style={styles.dateContainer}>
+      //       <Text style={styles.dateText}>
+      //         {formatDate(item.created_at)}
+      //       </Text>
+      //     </View>
+
+      //     <View style={styles.detailItem}>
+      //       <Icon name="person" size={20} color="#555" style={styles.icon} />
+      //       <Text style={styles.name}>
+      //         {item.name}
+      //       </Text>
+      //     </View>
+
+      //     <View style={styles.detailItem}>
+      //       <Icon name="location-sharp" size={20} color="#555" style={styles.icon} />
+      //       <Text style={styles.location}>
+      //         Última localização: {item.last_location}
+      //       </Text>
+      //     </View>
+
+      //     <View style={styles.detailItem}>
+      //       <Icon name="information-circle" size={20} color="#555" style={styles.icon} />
+      //       <View style={styles.statusContainer}>
+      //         <Text style={styles.statusLabel}>
+      //           Status:
+      //         </Text>
+      //         <Text style={[styles.statusValue, { color: getStatusColor(item.status.name) }]}>
+      //           {" " + item.status.name}
+      //         </Text>
+      //       </View>
+      //     </View>
+
+      //   </View>
+      // </View>
     );
   };
 
