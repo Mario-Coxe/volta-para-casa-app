@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import useHomeViewModel from "@/components/src/view-models/HomeViewModel";
@@ -20,7 +21,8 @@ import { getStatusColor } from "@/components/src/utils/color-for-status";
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function HomeScreen() {
-  const { missingPersons, loading, error } = useHomeViewModel();
+  const { missingPersons, loading, error, fetchMissingPersons } = useHomeViewModel(); // Adicione sua função de fetch
+  const [refreshing, setRefreshing] = useState(false);
 
   const [loaded] = useFonts({
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
@@ -38,7 +40,13 @@ export default function HomeScreen() {
     return null;
   }
 
-  if (loading) {
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchMissingPersons(); // Chame a função para buscar os dados novamente
+    setRefreshing(false);
+  }, [fetchMissingPersons]);
+
+  if (loading && !refreshing) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#F02A4B" />
@@ -128,6 +136,9 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         ListEmptyComponent={
           <Text style={styles.emptyText}>
             Nenhuma pessoa desaparecida encontrada.
@@ -178,7 +189,7 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.95,
     height: 250,
     resizeMode: "contain",
-    elevation: 10
+    elevation: 10,
   },
   details: {
     padding: 15,

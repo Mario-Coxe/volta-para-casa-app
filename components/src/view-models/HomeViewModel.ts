@@ -7,20 +7,20 @@ export default function useHomeViewModel() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchMissingPersons() {
-      try {
-        const data = await findAllMissingPersons();
-        setMissingPersons(data);
-      } catch (err) {
-        setError("Failed to fetch missing persons");
-      } finally {
-        setLoading(false);
-      }
+  const fetchMissingPersons = async () => {
+    setLoading(true);
+    try {
+      const data = await findAllMissingPersons();
+      setMissingPersons(data);
+    } catch (err) {
+      setError("Failed to fetch missing persons");
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchMissingPersons();
   }, []);
-
-  return { missingPersons, loading, error };
+  return { missingPersons, loading, error, fetchMissingPersons };
 }
