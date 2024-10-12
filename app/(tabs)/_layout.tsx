@@ -46,6 +46,7 @@ export default function Layout() {
                   fontSize: 12,
                   marginTop: 4,
                 }}
+        
               >
                 Home
               </Text>

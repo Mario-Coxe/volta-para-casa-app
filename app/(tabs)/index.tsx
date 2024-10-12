@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,27 +7,25 @@ import {
   StyleSheet,
   Image,
   Dimensions,
-} from 'react-native';
-import Swiper from 'react-native-swiper';
-import useHomeViewModel from '@/components/src/view-models/HomeViewModel';
-import MissingPerson from '@/components/src/models/missing-person';
-import { API_URL_ACESS_FILE } from '@/enviroments';
+} from "react-native";
+import Swiper from "react-native-swiper";
+import useHomeViewModel from "@/components/src/view-models/HomeViewModel";
+import MissingPerson from "@/components/src/models/missing-person";
+import { API_URL_ACESS_FILE } from "@/enviroments";
 import Icon from "@expo/vector-icons/Ionicons";
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { formatDate } from '@/components/src/utils/date-formatter';
-import { getStatusColor } from '@/components/src/utils/color-for-status';
-const { width: screenWidth } = Dimensions.get('window');
-import { Card } from 'react-native-paper';
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { formatDate } from "@/components/src/utils/date-formatter";
+import { getStatusColor } from "@/components/src/utils/color-for-status";
+const { width: screenWidth } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const { missingPersons, loading, error } = useHomeViewModel();
 
   const [loaded] = useFonts({
-    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
-    PoppinsBold: require('../../assets/fonts/Poppins-Bold.ttf'),
-    PoppinsRegular: require('../../assets/fonts/Poppins-Regular.ttf')
-
+    SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
+    PoppinsBold: require("../../assets/fonts/Poppins-Bold.ttf"),
+    PoppinsRegular: require("../../assets/fonts/Poppins-Regular.ttf"),
   });
 
   useEffect(() => {
@@ -60,67 +58,66 @@ export default function HomeScreen() {
     const imageUrls = getValidImageUrls(item);
 
     return (
+      <View style={styles.card}>
+        <Swiper
+          style={styles.swiper}
+          showsPagination
+          activeDotColor="#F02A4B"
+          loop
+        >
+          {imageUrls.map((imageUrl, index) => (
+            <View key={index} style={styles.slide}>
+              <Image
+                source={{ uri: `${API_URL_ACESS_FILE}${imageUrl}` }}
+                style={styles.carouselImage}
+                resizeMode="cover"
+              />
+            </View>
+          ))}
+        </Swiper>
+        <View style={styles.details}>
+          <View style={styles.dateContainer}>
+            <Text style={styles.dateText}>{formatDate(item.created_at)}</Text>
+          </View>
 
-      <Card>
-        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-      </Card>
+          <View style={styles.detailItem}>
+            <Icon name="person" size={20} color="#555" style={styles.icon} />
+            <Text style={styles.name}>{item.name}</Text>
+          </View>
 
-      // <View style={styles.card}>
+          <View style={styles.detailItem}>
+            <Icon
+              name="location-sharp"
+              size={20}
+              color="#555"
+              style={styles.icon}
+            />
+            <Text style={styles.location}>
+              Última localização: {item.last_location}
+            </Text>
+          </View>
 
-
-
-      //   {/* <Swiper
-      //     style={styles.swiper}
-      //     showsPagination
-      //     activeDotColor="#F02A4B"
-      //     loop
-      //   >
-      //     {imageUrls.map((imageUrl, index) => (
-      //       <View key={index} style={styles.slide}>
-      //         <Image
-      //           source={{ uri: `${API_URL_ACESS_FILE}${imageUrl}` }}
-      //           style={styles.carouselImage}
-      //           resizeMode="cover"
-      //         />
-      //       </View>
-      //     ))}
-      //   </Swiper> */}
-
-      //   <View style={styles.details}>
-      //     <View style={styles.dateContainer}>
-      //       <Text style={styles.dateText}>
-      //         {formatDate(item.created_at)}
-      //       </Text>
-      //     </View>
-
-      //     <View style={styles.detailItem}>
-      //       <Icon name="person" size={20} color="#555" style={styles.icon} />
-      //       <Text style={styles.name}>
-      //         {item.name}
-      //       </Text>
-      //     </View>
-
-      //     <View style={styles.detailItem}>
-      //       <Icon name="location-sharp" size={20} color="#555" style={styles.icon} />
-      //       <Text style={styles.location}>
-      //         Última localização: {item.last_location}
-      //       </Text>
-      //     </View>
-
-      //     <View style={styles.detailItem}>
-      //       <Icon name="information-circle" size={20} color="#555" style={styles.icon} />
-      //       <View style={styles.statusContainer}>
-      //         <Text style={styles.statusLabel}>
-      //           Status:
-      //         </Text>
-      //         <Text style={[styles.statusValue, { color: getStatusColor(item.status.name) }]}>
-      //           {" " + item.status.name}
-      //         </Text>
-      //       </View>
-      //     </View>
-
-      //   </View>
-      // </View>
+          <View style={styles.detailItem}>
+            <Icon
+              name="information-circle"
+              size={20}
+              color="#555"
+              style={styles.icon}
+            />
+            <View style={styles.statusContainer}>
+              <Text style={styles.statusLabel}>Status:</Text>
+              <Text
+                style={[
+                  styles.statusValue,
+                  { color: getStatusColor(item.status.name) },
+                ]}
+              >
+                {" " + item.status.name}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
     );
   };
 
@@ -136,6 +133,7 @@ export default function HomeScreen() {
             Nenhuma pessoa desaparecida encontrada.
           </Text>
         }
+        ListFooterComponent={<View style={styles.footer} />} // Adiciona espaço extra no final
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -154,112 +152,111 @@ const getValidImageUrls = (item: MissingPerson): string[] => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   listContent: {
     padding: 16,
+    paddingBottom: 40,
   },
   card: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
+    borderRadius: 1,
     marginBottom: 20,
-    overflow: 'hidden',
-    elevation: 8,
-    width: screenWidth * 0.95,
-    alignSelf: 'center',
+    overflow: "hidden",
+    elevation: 1,
+    width: screenWidth * 0.94,
+    alignSelf: "center",
   },
   swiper: {
     height: 250,
   },
   slide: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   carouselImage: {
     width: screenWidth * 0.95,
     height: 250,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    resizeMode: 'contain',
+    resizeMode: "contain",
+    elevation: 10
   },
   details: {
-    padding: 20,
-    backgroundColor: '#F7F7F7',
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
+    padding: 15,
   },
   detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 4,
   },
   icon: {
     marginRight: 8,
-    color: '#555',
+    color: "#555",
   },
   name: {
     fontSize: 14,
-    color: '#2C3E50',
-    fontFamily: 'PoppinsBold',
+    color: "#2C3E50",
+    fontFamily: "PoppinsBold",
   },
   location: {
     fontSize: 12,
-    color: '#000',
-    fontFamily: 'PoppinsRegular',
+    color: "#000",
+    fontFamily: "PoppinsRegular",
   },
   status: {
     fontSize: 12,
-    color: '#E74C3C',
-    fontFamily: 'PoppinsRegular',
+    color: "#E74C3C",
+    fontFamily: "PoppinsRegular",
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 18,
-    color: '#999',
+    color: "#999",
     marginTop: 50,
-    fontFamily: 'SpaceMono',
+    fontFamily: "SpaceMono",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   errorText: {
     fontSize: 18,
-    color: '#D9534F',
-    textAlign: 'center',
-    fontFamily: 'PoppinsRegular',
+    color: "#D9534F",
+    textAlign: "center",
+    fontFamily: "PoppinsRegular",
   },
   dateContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    justifyContent: "center",
+    alignItems: "flex-end",
   },
   dateText: {
     fontSize: 11,
-    color: '#7F8C8D',
-    fontFamily: 'PoppinsRegular'
+    color: "#7F8C8D",
+    fontFamily: "PoppinsRegular",
   },
   statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: -2
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: -2,
   },
   statusLabel: {
     fontSize: 12,
-    fontFamily: 'PoppinsRegular',
-    color: '#000',
+    fontFamily: "PoppinsRegular",
+    color: "#000",
   },
   statusValue: {
     fontSize: 12,
-    fontFamily: 'PoppinsRegular'
+    fontFamily: "PoppinsRegular",
+  },
+  footer: {
+    height: 80, 
   },
 });

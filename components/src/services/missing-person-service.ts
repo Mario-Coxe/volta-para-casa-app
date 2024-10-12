@@ -3,17 +3,15 @@ import { API_URL } from "@/enviroments";
 
 export async function findAllMissingPersons(): Promise<MissingPerson[]> {
   try {
-    console.log("Fetching missing persons...");
     const response = await fetch(API_URL + "missing-persons");
-
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.statusText}`);
     }
 
     const data = await response.json();
 
-    if (data.data && Array.isArray(data.data)) {
-      const missingPersons = data.data.map(
+    if (data && Array.isArray(data)) {
+      const missingPersons = data.map(
         (person: any) =>
           new MissingPerson(
             person.id,
@@ -33,7 +31,6 @@ export async function findAllMissingPersons(): Promise<MissingPerson[]> {
             person.created_at
           )
       );
-
       return missingPersons;
     } else {
       console.error("Invalid response format: 'data' is not an array");
