@@ -53,7 +53,7 @@ export default function HomeScreen() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    setPage(1); // Reinicia a paginação para a primeira página
+    setPage(PAGINATION.page);
     setHasMore(true);
     fetchMissingPersons(PAGINATION.page).finally(() => setRefreshing(false));
   };
@@ -75,13 +75,13 @@ export default function HomeScreen() {
   }
 
   const renderFooter = () => {
-    if (!loadingMore) return null;
     return (
       <View style={styles.footer}>
-        <ActivityIndicator size="small" color="#F02A4B" />
+        {loadingMore && <ActivityIndicator size="large" color="#F02A4B" />}
       </View>
     );
   };
+  
 
   const renderItem = ({ item }: { item: MissingPerson }) => {
     const imageUrls = getValidImageUrls(item);
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
-    paddingBottom: 40,
+    paddingBottom: 80,
   },
   card: {
     borderRadius: 1,
@@ -292,6 +292,6 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsRegular",
   },
   footer: {
-    height: 80,
+    height: 100
   },
 });
