@@ -1,19 +1,22 @@
 import MissingPerson from "../models/missing-person";
 import { API_URL, PAGINATION } from "@/enviroments";
 
-export async function findAllMissingPersons(): Promise<MissingPerson[]> {
+export async function findAllMissingPersons(page: number, limit: number): Promise<MissingPerson[]> {
   try {
-    const response = await fetch(`${API_URL}missing-persons?page=${PAGINATION.page}&limit=${PAGINATION.limit}`);
+    const response = await fetch(`${API_URL}missing-persons?page=${page}&limit=${limit}`);
 
-   // console.log(response)
+    console.log(response)
+  
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.statusText}`);
     }
 
     const data = await response.json();
 
+   // console.log("data", data)
+
     if (data && Array.isArray(data)) {
-      const missingPersons = data.map( 
+      const missingPersons = data.map(
         (person: any) =>
           new MissingPerson(
             person.id,
@@ -35,7 +38,7 @@ export async function findAllMissingPersons(): Promise<MissingPerson[]> {
       );
       return missingPersons;
     } else {
-      console.error("Invalid response format: 'data' is not an array");
+      console.error("Invalid response format: 'data.items' is not an array");
       return [];
     }
   } catch (error) {

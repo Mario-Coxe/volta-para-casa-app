@@ -21,9 +21,9 @@ import { getStatusColor } from "@/components/src/utils/color-for-status";
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function HomeScreen() {
-  const { missingPersons, loading, error, fetchMissingPersons } =
-    useHomeViewModel();
-  const [refreshing, setRefreshing] = useState(false);
+  const { missingPersons, loading, error, fetchMissingPersons, loadMore, loadingMore, hasMore } =
+  useHomeViewModel();
+const [refreshing, setRefreshing] = useState(false);
 
   const [loaded] = useFonts({
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
@@ -43,7 +43,8 @@ export default function HomeScreen() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchMissingPersons().finally(() => setRefreshing(false));
+    fetchMissingPersons(1).finally(() => setRefreshing(false));
+    loadMore
   };
 
 
@@ -62,6 +63,16 @@ export default function HomeScreen() {
       </View>
     );
   }
+
+  const renderFooter = () => {
+    if (!loadingMore) return null;
+    return (
+      <View style={styles.footer}>
+        <ActivityIndicator size="small" color="#F02A4B" />
+      </View>
+    );
+  };
+
 
 
   const renderItem = ({ item }: { item: MissingPerson }) => {
@@ -133,7 +144,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
+     <FlatList
         data={missingPersons}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
@@ -141,12 +152,14 @@ export default function HomeScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        onEndReached={loadMore} // Carrega mais quando atinge o final da lista
+        onEndReachedThreshold={0.5} // Controla quando aciona o carregamento
+        ListFooterComponent={renderFooter} // Exibe loading ao carregar mais
         ListEmptyComponent={
           <Text style={styles.emptyText}>
             Nenhuma pessoa desaparecida encontrada.
           </Text>
         }
-        ListFooterComponent={<View style={styles.footer} />}
         showsVerticalScrollIndicator={false}
       />
     </View>
