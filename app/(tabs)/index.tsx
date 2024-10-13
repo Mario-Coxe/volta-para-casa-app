@@ -42,6 +42,8 @@ export default function HomeScreen() {
     PoppinsRegular: require("../../assets/fonts/Poppins-Regular.ttf"),
   });
 
+  const [isFollowing, setIsFollowing] = useState(false);
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -59,9 +61,10 @@ export default function HomeScreen() {
     fetchMissingPersons(PAGINATION.page).finally(() => setRefreshing(false));
   };
 
-  const handleFollowCase = (id: number) => {
-    // Implementar lógica para seguir/deseguir o caso
-    console.log(`Seguir caso com ID: ${id}`);
+  const handleFollowCase = (caseId: number) => {
+    setIsFollowing((prev) => !prev); // Inverte o estado
+    // Aqui você pode fazer a chamada à API para seguir/deseguir o caso
+    console.log(`Caso ${caseId} ${isFollowing ? "desseguido" : "seguido"}`);
   };
 
   if (loading && !refreshing) {
@@ -151,13 +154,17 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Adicionar ícone de seguir e número de comentários */}
           <View style={styles.detailItem}>
             <TouchableOpacity onPress={() => handleFollowCase(item.id)}>
-              <Icon name="notifications-outline" size={24} color="#F02A4B" />
+              <Icon
+                name={isFollowing ? "notifications" : "notifications-outline"}
+                size={24}
+                color={isFollowing ? "#F02A4B" : "#555"}
+              />
             </TouchableOpacity>
-            <Text style={styles.followText}>Seguir caso</Text>
-
+            <Text style={styles.followText}>
+              {isFollowing ? "Seguindo" : "Seguir"}
+            </Text>
             <View style={styles.commentSection}>
               <Icon name="chatbubble-outline" size={24} color="#555" />
               <Text style={styles.commentText}>10 comentários</Text>
@@ -178,9 +185,9 @@ export default function HomeScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        onEndReached={loadMore} 
+        onEndReached={loadMore}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter} 
+        ListFooterComponent={renderFooter}
         ListEmptyComponent={
           <Text style={styles.emptyText}>
             Nenhuma pessoa desaparecida encontrada.
@@ -269,7 +276,7 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsRegular",
   },
   footer: {
-    height: 100
+    height: 100,
   },
   followText: {
     fontSize: 14,
