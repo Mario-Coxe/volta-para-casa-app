@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import useHomeViewModel from "@/components/src/view-models/HomeViewModel";
@@ -58,6 +59,11 @@ export default function HomeScreen() {
     fetchMissingPersons(PAGINATION.page).finally(() => setRefreshing(false));
   };
 
+  const handleFollowCase = (id: number) => {
+    // Implementar lógica para seguir/deseguir o caso
+    console.log(`Seguir caso com ID: ${id}`);
+  };
+
   if (loading && !refreshing) {
     return (
       <View style={styles.loadingContainer}>
@@ -81,7 +87,6 @@ export default function HomeScreen() {
       </View>
     );
   };
-  
 
   const renderItem = ({ item }: { item: MissingPerson }) => {
     const imageUrls = getValidImageUrls(item);
@@ -145,6 +150,19 @@ export default function HomeScreen() {
               </Text>
             </View>
           </View>
+
+          {/* Adicionar ícone de seguir e número de comentários */}
+          <View style={styles.detailItem}>
+            <TouchableOpacity onPress={() => handleFollowCase(item.id)}>
+              <Icon name="notifications-outline" size={24} color="#F02A4B" />
+            </TouchableOpacity>
+            <Text style={styles.followText}>Seguir caso</Text>
+
+            <View style={styles.commentSection}>
+              <Icon name="chatbubble-outline" size={24} color="#555" />
+              <Text style={styles.commentText}>10 comentários</Text>
+            </View>
+          </View>
         </View>
       </View>
     );
@@ -160,15 +178,14 @@ export default function HomeScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        onEndReached={loadMore} // Carrega mais quando atinge o final da lista
-        onEndReachedThreshold={0.5} // Controla quando aciona o carregamento
-        ListFooterComponent={renderFooter} // Exibe loading ao carregar mais
+        onEndReached={loadMore} 
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter} 
         ListEmptyComponent={
           <Text style={styles.emptyText}>
             Nenhuma pessoa desaparecida encontrada.
           </Text>
         }
-        //ListFooterComponent={<View style={styles.footer} />}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -237,10 +254,37 @@ const styles = StyleSheet.create({
     color: "#000",
     fontFamily: "PoppinsRegular",
   },
-  status: {
+  statusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: -2,
+  },
+  statusLabel: {
     fontSize: 12,
-    color: "#E74C3C",
     fontFamily: "PoppinsRegular",
+    color: "#000",
+  },
+  statusValue: {
+    fontSize: 12,
+    fontFamily: "PoppinsRegular",
+  },
+  footer: {
+    height: 100
+  },
+  followText: {
+    fontSize: 14,
+    color: "#F02A4B",
+    marginLeft: 8,
+  },
+  commentSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 16,
+  },
+  commentText: {
+    fontSize: 14,
+    color: "#555",
+    marginLeft: 4,
   },
   emptyText: {
     textAlign: "center",
@@ -276,22 +320,5 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#7F8C8D",
     fontFamily: "PoppinsRegular",
-  },
-  statusContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: -2,
-  },
-  statusLabel: {
-    fontSize: 12,
-    fontFamily: "PoppinsRegular",
-    color: "#000",
-  },
-  statusValue: {
-    fontSize: 12,
-    fontFamily: "PoppinsRegular",
-  },
-  footer: {
-    height: 100
   },
 });

@@ -8,20 +8,20 @@ export default function useHomeViewModel() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(PAGINATION.page);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true); // Verifica se há mais itens para carregar
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
-  const limit = PAGINATION.limit; // Itens por página
+  const limit = PAGINATION.limit;
 
   const fetchMissingPersons = async (page: number) => {
-    setLoading(page === 1); // Mostra loading apenas na primeira página
-    setLoadingMore(page > 1); // Loading ao carregar mais itens
+    setLoading(page === 1);
+    setLoadingMore(page > 1);
     try {
       const data = await findAllMissingPersons(page, limit);
       if (data.length < limit) {
-        setHasMore(false); // Se não houver mais itens, define hasMore como falso
+        setHasMore(false);
       }
 
-      setMissingPersons(prev => (page === 1 ? data : [...prev, ...data])); // Acumula itens ao rolar
+      setMissingPersons((prev) => (page === 1 ? data : [...prev, ...data]));
     } catch (err) {
       setError("Failed to fetch missing persons");
     } finally {
@@ -31,20 +31,29 @@ export default function useHomeViewModel() {
   };
 
   useEffect(() => {
-    fetchMissingPersons(PAGINATION.page); // Carrega a primeira página ao montar o componente
+    fetchMissingPersons(PAGINATION.page);
   }, []);
 
   const loadMore = () => {
     if (!loadingMore && hasMore) {
-      setPage(prevPage => {
+      setPage((prevPage) => {
         const nextPage = prevPage + 1;
         fetchMissingPersons(nextPage);
         return nextPage;
       });
-      console.log("page", page)
-
     }
   };
 
-  return { missingPersons, loading, error, fetchMissingPersons, loadMore, loadingMore, hasMore, page, setPage, setHasMore};
+  return {
+    missingPersons,
+    loading,
+    error,
+    fetchMissingPersons,
+    loadMore,
+    loadingMore,
+    hasMore,
+    page,
+    setPage,
+    setHasMore,
+  };
 }

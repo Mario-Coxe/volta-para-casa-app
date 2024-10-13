@@ -4,17 +4,10 @@ import { API_URL, PAGINATION } from "@/enviroments";
 export async function findAllMissingPersons(page: number, limit: number): Promise<MissingPerson[]> {
   try {
     const response = await fetch(`${API_URL}missing-persons?page=${page}&limit=${limit}`);
-
-    console.log(response)
-  
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.statusText}`);
     }
-
     const data = await response.json();
-
-   // console.log("data", data)
-
     if (data && Array.isArray(data)) {
       const missingPersons = data.map(
         (person: any) =>
