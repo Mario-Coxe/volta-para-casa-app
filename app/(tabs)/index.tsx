@@ -22,7 +22,7 @@ const { width: screenWidth } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const { missingPersons, loading, error, fetchMissingPersons } =
-    useHomeViewModel(); // Adicione sua função de fetch
+    useHomeViewModel();
   const [refreshing, setRefreshing] = useState(false);
 
   const [loaded] = useFonts({
@@ -46,14 +46,6 @@ export default function HomeScreen() {
     fetchMissingPersons().finally(() => setRefreshing(false));
   };
 
-  /*
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await fetchMissingPersons(); // Chame a função para buscar os dados novamente
-    setRefreshing(false);
-  }, [fetchMissingPersons]);
-
-  */
 
   if (loading && !refreshing) {
     return (
@@ -70,6 +62,7 @@ export default function HomeScreen() {
       </View>
     );
   }
+
 
   const renderItem = ({ item }: { item: MissingPerson }) => {
     const imageUrls = getValidImageUrls(item);

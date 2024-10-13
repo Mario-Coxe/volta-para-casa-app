@@ -4,8 +4,9 @@ import { API_URL, PAGINATION } from "@/enviroments";
 export async function findAllMissingPersons(): Promise<MissingPerson[]> {
   try {
     const response = await fetch(`${API_URL}missing-persons?page=${PAGINATION.page}&limit=${PAGINATION.limit}`);
-    //console.log(response)
-    if (!response.ok) { 
+
+   // console.log(response)
+    if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.statusText}`);
     }
 
