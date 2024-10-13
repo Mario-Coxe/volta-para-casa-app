@@ -12,7 +12,7 @@ import {
 import Swiper from "react-native-swiper";
 import useHomeViewModel from "@/components/src/view-models/HomeViewModel";
 import MissingPerson from "@/components/src/models/missing-person";
-import { API_URL_ACESS_FILE } from "@/enviroments";
+import { API_URL_ACESS_FILE, PAGINATION } from "@/enviroments";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -21,9 +21,19 @@ import { getStatusColor } from "@/components/src/utils/color-for-status";
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function HomeScreen() {
-  const { missingPersons, loading, error, fetchMissingPersons, loadMore, loadingMore, hasMore } =
-  useHomeViewModel();
-const [refreshing, setRefreshing] = useState(false);
+  const {
+    missingPersons,
+    loading,
+    error,
+    fetchMissingPersons,
+    loadMore,
+    loadingMore,
+    hasMore,
+    page,
+    setPage,
+    setHasMore,
+  } = useHomeViewModel();
+  const [refreshing, setRefreshing] = useState(false);
 
   const [loaded] = useFonts({
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
@@ -43,10 +53,10 @@ const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchMissingPersons(1).finally(() => setRefreshing(false));
-    loadMore
+    setPage(1); // Reinicia a paginação para a primeira página
+    setHasMore(true);
+    fetchMissingPersons(PAGINATION.page).finally(() => setRefreshing(false));
   };
-
 
   if (loading && !refreshing) {
     return (
@@ -72,8 +82,6 @@ const [refreshing, setRefreshing] = useState(false);
       </View>
     );
   };
-
-
 
   const renderItem = ({ item }: { item: MissingPerson }) => {
     const imageUrls = getValidImageUrls(item);
@@ -144,7 +152,7 @@ const [refreshing, setRefreshing] = useState(false);
 
   return (
     <View style={styles.container}>
-     <FlatList
+      <FlatList
         data={missingPersons}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
@@ -160,6 +168,7 @@ const [refreshing, setRefreshing] = useState(false);
             Nenhuma pessoa desaparecida encontrada.
           </Text>
         }
+        //ListFooterComponent={<View style={styles.footer} />}
         showsVerticalScrollIndicator={false}
       />
     </View>
