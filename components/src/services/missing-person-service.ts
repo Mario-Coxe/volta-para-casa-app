@@ -1,21 +1,22 @@
 import MissingPerson from "../models/missing-person";
-import { API_URL } from "@/enviroments";
+import { API_URL, PAGINATION } from "@/enviroments";
 
 export async function findAllMissingPersons(): Promise<MissingPerson[]> {
   try {
-    const response = await fetch(API_URL + "missing-persons");
-    if (!response.ok) {
+    const response = await fetch(`${API_URL}missing-persons?page=${PAGINATION.page}&limit=${PAGINATION.limit}`);
+    //console.log(response)
+    if (!response.ok) { 
       throw new Error(`Network response was not ok: ${response.statusText}`);
     }
 
     const data = await response.json();
 
     if (data && Array.isArray(data)) {
-      const missingPersons = data.map(
+      const missingPersons = data.map( 
         (person: any) =>
           new MissingPerson(
             person.id,
-            person.name,
+            person.name, 
             person.age,
             person.gender,
             person.last_location,

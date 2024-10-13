@@ -21,7 +21,8 @@ import { getStatusColor } from "@/components/src/utils/color-for-status";
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function HomeScreen() {
-  const { missingPersons, loading, error, fetchMissingPersons } = useHomeViewModel(); // Adicione sua função de fetch
+  const { missingPersons, loading, error, fetchMissingPersons } =
+    useHomeViewModel(); // Adicione sua função de fetch
   const [refreshing, setRefreshing] = useState(false);
 
   const [loaded] = useFonts({
@@ -40,11 +41,19 @@ export default function HomeScreen() {
     return null;
   }
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchMissingPersons().finally(() => setRefreshing(false));
+  };
+
+  /*
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchMissingPersons(); // Chame a função para buscar os dados novamente
     setRefreshing(false);
   }, [fetchMissingPersons]);
+
+  */
 
   if (loading && !refreshing) {
     return (
@@ -144,7 +153,7 @@ export default function HomeScreen() {
             Nenhuma pessoa desaparecida encontrada.
           </Text>
         }
-        ListFooterComponent={<View style={styles.footer} />} // Adiciona espaço extra no final
+        ListFooterComponent={<View style={styles.footer} />}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -268,6 +277,6 @@ const styles = StyleSheet.create({
     fontFamily: "PoppinsRegular",
   },
   footer: {
-    height: 80, 
+    height: 80,
   },
 });
