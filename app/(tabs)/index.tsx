@@ -20,7 +20,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { formatDate } from "@/components/src/utils/date-formatter";
 import { getStatusColor } from "@/components/src/utils/color-for-status";
 const { width: screenWidth } = Dimensions.get("window");
-
+import LoginRegisterModal from "@/components/src/components/model-login";
 export default function HomeScreen() {
   const {
     missingPersons,
@@ -43,6 +43,7 @@ export default function HomeScreen() {
   });
 
   const [isFollowing, setIsFollowing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     if (loaded) {
@@ -62,8 +63,9 @@ export default function HomeScreen() {
   };
 
   const handleFollowCase = (caseId: number) => {
-    setIsFollowing((prev) => !prev); // Inverte o estado
-    // Aqui você pode fazer a chamada à API para seguir/deseguir o caso
+    setIsFollowing((prev) => !prev); 
+    console.log("Antes de abrir o modal:", modalVisible);
+    setModalVisible(true);
     console.log(`Caso ${caseId} ${isFollowing ? "desseguido" : "seguido"}`);
   };
 
@@ -114,7 +116,7 @@ export default function HomeScreen() {
         </Swiper>
         <View style={styles.details}>
           <View style={styles.dateContainer}>
-            <Text style={styles.dateText}>{formatDate(item.created_at)}</Text>
+            <Text style={styles.dateText}>{formatDate(item.disappearance_date)}</Text>
           </View>
 
           <View style={styles.detailItem}>
@@ -194,6 +196,11 @@ export default function HomeScreen() {
           </Text>
         }
         showsVerticalScrollIndicator={false}
+      />
+
+      <LoginRegisterModal
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
       />
     </View>
   );

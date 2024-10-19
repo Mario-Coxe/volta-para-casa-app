@@ -6,6 +6,7 @@ export default class MissingPerson {
     public age: number,
     public gender: string,
     public last_location: string,
+    public disappearance_date: string,
     public registered_by: number,
     public description: string,
     public first_photo: string,
@@ -15,6 +16,6 @@ export default class MissingPerson {
     public status_id: string,
     public status: STATUS,
     public user: USER,
-    public created_at: string
+    public created_at: string,
   ) {}
 }

@@ -17,6 +17,7 @@ export async function findAllMissingPersons(page: number, limit: number): Promis
             person.age,
             person.gender,
             person.last_location,
+            person.disappearance_date,
             person.registered_by,
             person.description,
             person.first_photo,

@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@hookform/resolvers": "^3.9.0",
+    "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.0.2",
     "expo": "~51.0.20",
     "expo-constants": "~16.0.2",
@@ -26,13 +28,16 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "libphonenumber-js": "^1.11.11",
     "native-base": "^3.4.28",
     "nativewind": "^4.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.3",
     "react-native-gesture-handler": "~2.16.1",
+    "react-native-modalize": "^2.1.1",
     "react-native-paper": "^5.12.5",
+    "react-native-picker-select": "^9.3.1",
     "react-native-reanimated": "~3.10.1",
     "react-native-reanimated-carousel": "^3.5.1",
     "react-native-safe-area-context": "3.3.2",
@@ -42,7 +47,8 @@
     "react-native-swiper": "^1.6.0",
     "react-native-web": "~0.19.10",
     "tailwindcss": "^3.4.13",
-    "voltaparacasa": "file:"
+    "voltaparacasa": "file:",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
