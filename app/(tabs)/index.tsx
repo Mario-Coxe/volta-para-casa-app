@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Swiper from "react-native-swiper";
-import useHomeViewModel from "@/components/src/view-models/HomeViewModel";
+import useHomeViewModel from "@/components/src/view-models/home-view-model";
 import MissingPerson from "@/components/src/models/missing-person";
 import { API_URL_ACESS_FILE, PAGINATION } from "@/enviroments";
 import Icon from "@expo/vector-icons/Ionicons";
@@ -19,8 +19,11 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { formatDate } from "@/components/src/utils/date-formatter";
 import { getStatusColor } from "@/components/src/utils/color-for-status";
-const { width: screenWidth } = Dimensions.get("window");
 import LoginRegisterModal from "@/components/src/components/model-login";
+
+const { width: screenWidth } = Dimensions.get("window");
+
+
 export default function HomeScreen() {
   const {
     missingPersons,

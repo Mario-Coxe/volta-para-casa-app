@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,22 +8,24 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { findMunicipesByProvinceId } from "../services/municipe-service";
+import { findAllProvince } from "../services/province-service";
+import { useRegisterViewModel } from "../view-models/register-view-model";
 
 // Schema de validação com yup
 const schema = yup.object().shape({
-  name: yup.string().required("Nome é obrigatório"),
-  phone: yup
+  full_name: yup.string().required("Nome é obrigatório"),
+  phone_number: yup
     .string()
     .required("Telefone é obrigatório")
     .matches(/^9\d{8}$/, "Número de telefone inválido. Deve começar com 9 e ter 9 dígitos."),
-  province: yup.string().required("Província é obrigatória"),
-  municipality: yup.string().required("Município é obrigatório"),
+  province_id: yup.string().required("Província é obrigatória"),
+  municipe_id: yup.string().required("Município é obrigatório"),
   password: yup.string().required("Senha é obrigatória").min(6, "A senha deve ter no mínimo 6 caracteres"),
 });
 
@@ -32,23 +34,14 @@ interface LoginRegisterModalProps {
   onDismiss: () => void;
 }
 
-const provinces = [
-  { label: "Luanda", value: "luanda" },
-  { label: "Benguela", value: "benguela" },
-  { label: "Huambo", value: "huambo" },
-];
-
-const municipalities = [
-  { label: "Belas", value: "belas" },
-  { label: "Cazenga", value: "cazenga" },
-  { label: "Viana", value: "viana" },
-];
-
 const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
   visible,
   onDismiss,
 }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const [provinces, setProvinces] = useState<Array<{ label: string; value: string }>>([]);
+  const [municipalities, setMunicipalities] = useState<Array<{ label: string; value: string }>>([]);
+  const [selectedProvince, setSelectedProvince] = useState<string>("");
 
   const {
     control,
@@ -58,8 +51,55 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
     resolver: yupResolver(schema),
   });
 
-  const handleRegister = (data: any) => {
-    console.log("Dados do registro:", data);
+  // Usar o hook useRegisterViewModel
+  const { register, fullName, setFullName, phoneNumber, setPhoneNumber, password, setPassword, municipe_id, setMunicipeId, loading, error } = useRegisterViewModel();
+
+
+  // Carrega as províncias ao abrir o modal de registro
+  useEffect(() => {
+    if (visible) {
+      loadProvinces();
+    }
+  }, [visible]);
+
+  const loadProvinces = async () => {
+    try {
+      const provincesData = await findAllProvince();
+      setProvinces(provincesData.map((province: any) => ({ label: province.name, value: province.id })));
+    } catch (error) {
+      console.error("Erro ao carregar províncias:", error);
+    }
+  };
+
+  const loadMunicipalities = async (provinceId: number) => {
+    try {
+      const municipalitiesData = await findMunicipesByProvinceId(provinceId);
+      setMunicipalities(
+        municipalitiesData.map((municipality: any) => ({
+          label: municipality.name,
+          value: municipality.id,
+        }))
+      );
+    } catch (error) {
+      console.error("Erro ao carregar municípios:", error);
+    }
+  };
+
+  const handleProvinceChange = (provinceId: string) => {
+    setSelectedProvince(provinceId);
+    loadMunicipalities(Number(provinceId)); // Carrega os municípios ao selecionar uma província
+  };
+
+
+  const handleRegister = async (data: any) => {
+    setFullName(data.full_name);
+    setPhoneNumber(data.phone_number);
+    setMunicipeId(Number(data.municipe_id));
+    setPassword(data.password);
+
+    console.log(data)
+
+    await register(data.full_name, data.phone_number, data.password, data.municipe_id);
     onDismiss();
   };
 
@@ -103,7 +143,7 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
                 {/* Nome */}
                 <Controller
                   control={control}
-                  name="name"
+                  name="full_name"
                   render={({ field: { onChange, value } }) => (
                     <>
                       <TextInput
@@ -112,9 +152,9 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
                         onChangeText={onChange}
                         value={value}
                       />
-                      {errors.name && (
+                      {errors.full_name && (
                         <Text style={styles.errorText}>
-                          {errors.name.message}
+                          {errors.full_name.message}
                         </Text>
                       )}
                     </>
@@ -124,7 +164,7 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
                 {/* Telefone */}
                 <Controller
                   control={control}
-                  name="phone"
+                  name="phone_number" // Corrigido o nome do campo
                   render={({ field: { onChange, value } }) => (
                     <>
                       <TextInput
@@ -135,9 +175,9 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
                         value={value}
                         maxLength={9}
                       />
-                      {errors.phone && (
+                      {errors.phone_number && (
                         <Text style={styles.errorText}>
-                          {errors.phone.message}
+                          {errors.phone_number.message}
                         </Text>
                       )}
                     </>
@@ -147,19 +187,22 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
                 {/* Província */}
                 <Controller
                   control={control}
-                  name="province"
+                  name="province_id"
                   render={({ field: { onChange, value } }) => (
                     <>
                       <RNPickerSelect
-                        onValueChange={onChange}
+                        onValueChange={(value) => {
+                          onChange(value);
+                          handleProvinceChange(value); // Atualiza a seleção de província
+                        }}
                         items={provinces}
                         value={value}
                         placeholder={{ label: "Selecione uma província", value: "" }}
                         style={pickerSelectStyles}
                       />
-                      {errors.province && (
+                      {errors.province_id && (
                         <Text style={styles.errorText}>
-                          {errors.province.message}
+                          {errors.province_id.message}
                         </Text>
                       )}
                     </>
@@ -169,7 +212,7 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
                 {/* Município */}
                 <Controller
                   control={control}
-                  name="municipality"
+                  name="municipe_id"
                   render={({ field: { onChange, value } }) => (
                     <>
                       <RNPickerSelect
@@ -179,9 +222,9 @@ const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
                         placeholder={{ label: "Selecione um município", value: "" }}
                         style={pickerSelectStyles}
                       />
-                      {errors.municipality && (
+                      {errors.municipe_id && (
                         <Text style={styles.errorText}>
-                          {errors.municipality.message}
+                          {errors.municipe_id.message}
                         </Text>
                       )}
                     </>
@@ -243,68 +286,67 @@ const styles = StyleSheet.create({
     width: "100%",
     maxHeight: "80%",
   },
-  content: {
-    flexGrow: 1,
-  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    textAlign: "center",
   },
   input: {
-    height: 50,
-    borderColor: "#ddd",
     borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    width: "100%",
-  },
-  switchText: {
-    marginTop: 20,
-    textAlign: "center",
-  },
-  switchButton: {
-    color: "blue",
-    fontWeight: "bold",
-  },
-  closeButton: {
-    alignSelf: "flex-end",
+    padding: 10,
     marginBottom: 10,
-  },
-  closeButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
   },
   errorText: {
     color: "red",
     marginBottom: 10,
   },
-});
-
-// Estilos para RNPickerSelect
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    height: 50,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    width: "100%",
+  switchText: {
+    marginTop: 10,
+    textAlign: "center",
+  },
+  switchButton: {
+    color: "blue",
+    textDecorationLine: "underline",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+  },
+  closeButtonText: {
+    fontSize: 24,
+    fontWeight: "bold",
     color: "#000",
   },
-  inputAndroid: {
-    height: 50,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
+  content: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+});
+
+// Estilos personalizados para o RNPickerSelect
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
     paddingHorizontal: 10,
-    width: "100%",
-    color: "#000",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    color: "black",
+    marginBottom: 10,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    color: "black",
+    marginBottom: 10,
   },
 });
 
