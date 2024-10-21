@@ -81,4 +81,3 @@ Para mais informações ou sugestões, entre em contato:
 
 - **E-mail**: seu_email@dominio.com
 - **LinkedIn**: [Seu Perfil](https://www.linkedin.com/in/mariocoxe/)
-```
