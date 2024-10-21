@@ -1,5 +1,3 @@
-Aqui está um modelo de README para o seu aplicativo **VOLTAA**, que está sendo desenvolvido com React Native usando Expo e seguindo a arquitetura MVVM:
-
 ```markdown
 # VOLTAA
 
