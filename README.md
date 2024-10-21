@@ -34,7 +34,7 @@ Siga os passos abaixo para rodar o projeto localmente.
 
 ### Pré-requisitos
 
-- Node.js (>= 14.x)
+- Node.js (>= 18.x)
 - Expo CLI (última versão)
 
 ### Passos
