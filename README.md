@@ -87,7 +87,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 Se tiver alguma dúvida ou sugestão, sinta-se à vontade para abrir uma **Issue** ou entrar em contato:
 
-- Email: [seu_email@dominio.com](mailto:mariocoxedev@gmail.com)
+- Email: [mariocoxedev@gmail.com](mailto:mariocoxedev@gmail.com)
 - GitHub: [Mário Coxe](https://github.com/Mario-Coxe)
 
 ---
